@@ -46,18 +46,23 @@ template <typename K, typename V>
 size_t SizeOf(const std::pair<K, V>& p);
 
 template <template<typename...> class C>
-struct IsContainer {
+struct IsSupportedContainer {
     static constexpr bool value = false;
 };
 
-// TODO: if the element type is POD, then it should be .size() * sizeof(T)!
-// or this function is only for element type that is another container
 template <template<typename...> class C, typename... Ts>
-std::enable_if_t<IsContainer<C>::value, size_t> SizeOf(const C<Ts...>& c) {
+std::enable_if_t<IsSupportedContainer<C>::value && !std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
     size_t s = sizeof(c); // base size
     for (const auto& e : c) {
         s += SizeOf(e);
     }
+    return s;
+}
+
+template <template<typename...> class C, typename... Ts>
+std::enable_if_t<IsSupportedContainer<C>::value && std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
+    size_t s = sizeof(c); // base size
+    s += c.size() * sizeof(typename C<Ts...>::value_type);
     return s;
 }
 
@@ -88,12 +93,12 @@ std::enable_if_t<HasSizeOfMethod<T>::value, size_t> SizeOf(const T& t) {
 }
 
 template<>
-struct IsContainer<std::vector> {
+struct IsSupportedContainer<std::vector> {
     static constexpr bool value = true;
 };
 
 template<>
-struct IsContainer<std::map> {
+struct IsSupportedContainer<std::map> {
     static constexpr bool value = true;
 };
 

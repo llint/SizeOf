@@ -15,11 +15,15 @@ struct Test {
 
 int main()
 {
+    std::cout << sizeof(std::vector<int>::value_type) << std::endl;
+
     int* p = nullptr;
     std::cout << SizeOf(p) << std::endl;
 
     Test t;
     std::cout << SizeOf(t) << std::endl;
+    std::cout << SizeOf(&t) << std::endl;
+
 
     std::string s = "123";
     std::cout << SizeOf(s) << std::endl;
