@@ -97,14 +97,14 @@ size_t SizeOf(const std::array<T, N>& a) {
 
 struct TestHasSizeOfMethod {
     template <typename T>
-    static auto apply(const T* p) -> typename std::is_same<decltype(p->SizeOf()), size_t>::type;
+    static auto apply(std::nullptr_t) -> typename std::is_same<decltype(std::declval<const T>().SizeOf()), size_t>::type;
 
     template <typename>
     static constexpr std::false_type apply(...);
 };
 
 template <typename T>
-struct HasSizeOfMethod : decltype(TestHasSizeOfMethod::apply<T>(nullptr)) {};
+struct HasSizeOfMethod : decltype(TestHasSizeOfMethod::apply<T>(0)) {};
 
 template <typename T>
 std::enable_if_t<HasSizeOfMethod<T>::value, size_t> SizeOf(const T& t) {
