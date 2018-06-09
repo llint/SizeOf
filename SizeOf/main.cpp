@@ -26,10 +26,13 @@ int main()
 
 
     std::string s = "123";
-    std::cout << SizeOf(s) << std::endl;
+    std::cout << "s: " << SizeOf(s) << std::endl;
 
     std::vector<int> vi = {1, 2};
-    std::cout << SizeOf(vi) << std::endl;
+    std::cout << "vi: " << SizeOf(vi) << std::endl;
+
+    std::deque<std::unordered_set<std::string>> duss{{"1"}};
+    std::cout << "duss: " << sizeof(duss) << ", " << SizeOf(duss) << std::endl;
 
     std::vector<std::vector<std::string>> vvi = {{"023"}};
     std::cout << SizeOf(vvi) << std::endl;

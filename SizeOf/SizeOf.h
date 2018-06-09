@@ -18,6 +18,8 @@
 #include <map>
 #include <set>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <memory>
 #include <utility>
 
@@ -99,6 +101,31 @@ struct IsSupportedContainer<std::vector> {
 
 template<>
 struct IsSupportedContainer<std::map> {
+    static constexpr bool value = true;
+};
+
+template<>
+struct IsSupportedContainer<std::list> {
+    static constexpr bool value = true;
+};
+
+template<>
+struct IsSupportedContainer<std::deque> {
+    static constexpr bool value = true;
+};
+
+template<>
+struct IsSupportedContainer<std::set> {
+    static constexpr bool value = true;
+};
+
+template<>
+struct IsSupportedContainer<std::unordered_map> {
+    static constexpr bool value = true;
+};
+
+template<>
+struct IsSupportedContainer<std::unordered_set> {
     static constexpr bool value = true;
 };
 
