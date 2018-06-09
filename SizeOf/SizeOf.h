@@ -71,40 +71,16 @@ size_t SizeOf(const std::array<T, N>& a) {
     return sizeof(a);
 }
 
-//template <typename T>
-//struct HasSizeOf {
-//    static constexpr bool value = false;
-//};
-//
-//template<typename C>
-//struct HasSizeOf {
-//private:
-//    template<typename T>
-//    static constexpr auto check(T*) ->
-//        typename std::is_same<
-//            decltype( std::declval<T>().SizeOf( std::declval<Args>()... ) ),
-//            Ret
-//        >::type;
-//
-//    template<typename>
-//    static constexpr std::false_type check(...);
-//
-//    typedef decltype(check<C>(0)) type;
-//
-//public:
-//    static constexpr bool value = type::value;
-//};
-
-struct TestHasSizeOfMethod {
+template <typename C>
+struct HasSizeOfMethod {
     template <typename T>
-    static auto apply(std::nullptr_t) -> typename std::is_same<decltype(std::declval<const T>().SizeOf()), size_t>::type;
+    static typename std::is_same<decltype(std::declval<const T>().SizeOf()), size_t>::type check(std::nullptr_t);
 
     template <typename>
-    static constexpr std::false_type apply(...);
-};
+    static constexpr std::false_type check(...);
 
-template <typename T>
-struct HasSizeOfMethod : decltype(TestHasSizeOfMethod::apply<T>(0)) {};
+    static constexpr bool value = decltype(check<C>(nullptr))::value;
+};
 
 template <typename T>
 std::enable_if_t<HasSizeOfMethod<T>::value, size_t> SizeOf(const T& t) {
