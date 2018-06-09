@@ -45,8 +45,8 @@ int main()
     std::map<int, std::vector<int>> mivi  {{0, {0, 1}}};
     std::cout << sizeof(mivi) << ", " << SizeOf(mivi) << std::endl;
 
-    std::vector<std::map<int, std::vector<std::string>>> vmii{{{0, {"1", "22"}}}};
-    std::cout << sizeof(vmii) << ", " << SizeOf(vmii) << std::endl;
+    std::vector<std::map<int, std::vector<std::string>>> vmii{{{0, {"11", "223"}}}};
+    std::cout << "vmii: " << sizeof(vmii) << ", " << SizeOf(vmii) << std::endl;
     return 0;
 }
 

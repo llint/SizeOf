@@ -12,11 +12,11 @@
 #define SizeOf_h
 
 #include <iostream>
-#include <vector>
-#include <list>
-#include <deque>
 #include <map>
 #include <set>
+#include <list>
+#include <deque>
+#include <vector>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -53,14 +53,14 @@ struct IsSupportedContainer {
 };
 
 template <template<typename...> class C, typename... Ts>
-std::enable_if_t<IsSupportedContainer<C>::value && std::is_standard_layout<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
+std::enable_if_t<IsSupportedContainer<C>::value && std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
     size_t s = sizeof(c); // base size
     s += c.size() * sizeof(typename C<Ts...>::value_type);
     return s;
 }
 
 template <template<typename...> class C, typename... Ts>
-std::enable_if_t<IsSupportedContainer<C>::value && !std::is_standard_layout<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
+std::enable_if_t<IsSupportedContainer<C>::value && !std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
     size_t s = sizeof(c); // base size
     for (const auto& e : c) {
         s += SizeOf(e);
@@ -94,39 +94,18 @@ std::enable_if_t<HasSizeOfMethod<T>::value, size_t> SizeOf(const T& t) {
     return t.SizeOf();
 }
 
-template<>
-struct IsSupportedContainer<std::vector> {
-    static constexpr bool value = true;
-};
+#define REGISTER_SUPPORTED_CONTAINER(C) \
+template<> \
+struct IsSupportedContainer<C> { \
+    static constexpr bool value = true; \
+}
 
-template<>
-struct IsSupportedContainer<std::map> {
-    static constexpr bool value = true;
-};
-
-template<>
-struct IsSupportedContainer<std::list> {
-    static constexpr bool value = true;
-};
-
-template<>
-struct IsSupportedContainer<std::deque> {
-    static constexpr bool value = true;
-};
-
-template<>
-struct IsSupportedContainer<std::set> {
-    static constexpr bool value = true;
-};
-
-template<>
-struct IsSupportedContainer<std::unordered_map> {
-    static constexpr bool value = true;
-};
-
-template<>
-struct IsSupportedContainer<std::unordered_set> {
-    static constexpr bool value = true;
-};
+REGISTER_SUPPORTED_CONTAINER(std::set);
+REGISTER_SUPPORTED_CONTAINER(std::map);
+REGISTER_SUPPORTED_CONTAINER(std::list);
+REGISTER_SUPPORTED_CONTAINER(std::deque);
+REGISTER_SUPPORTED_CONTAINER(std::vector);
+REGISTER_SUPPORTED_CONTAINER(std::unordered_set);
+REGISTER_SUPPORTED_CONTAINER(std::unordered_map);
 
 #endif /* SizeOf_h */
