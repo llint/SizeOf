@@ -53,18 +53,18 @@ struct IsSupportedContainer {
 };
 
 template <template<typename...> class C, typename... Ts>
-std::enable_if_t<IsSupportedContainer<C>::value && !std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
+std::enable_if_t<IsSupportedContainer<C>::value && std::is_standard_layout<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
     size_t s = sizeof(c); // base size
-    for (const auto& e : c) {
-        s += SizeOf(e);
-    }
+    s += c.size() * sizeof(typename C<Ts...>::value_type);
     return s;
 }
 
 template <template<typename...> class C, typename... Ts>
-std::enable_if_t<IsSupportedContainer<C>::value && std::is_pod<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
+std::enable_if_t<IsSupportedContainer<C>::value && !std::is_standard_layout<typename C<Ts...>::value_type>::value, size_t> SizeOf(const C<Ts...>& c) {
     size_t s = sizeof(c); // base size
-    s += c.size() * sizeof(typename C<Ts...>::value_type);
+    for (const auto& e : c) {
+        s += SizeOf(e);
+    }
     return s;
 }
 

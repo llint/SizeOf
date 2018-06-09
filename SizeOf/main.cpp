@@ -24,6 +24,8 @@ int main()
     std::cout << SizeOf(t) << std::endl;
     std::cout << SizeOf(&t) << std::endl;
 
+    std::unordered_map<int, int> umii{{0, 0}};
+    std::cout << "umii: " << sizeof(umii) << ", " << SizeOf(umii) << std::endl;
 
     std::string s = "123";
     std::cout << "s: " << SizeOf(s) << std::endl;
