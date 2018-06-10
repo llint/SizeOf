@@ -9,8 +9,36 @@
 #include <iostream>
 #include "SizeOf.h"
 
-struct Test {
-    size_t SizeOf() const { return 42; }
+struct Lane {
+    std::vector<int> vi;
+    std::map<int, std::string> mis;
+    std::unordered_map<int, int> umii;
+    std::map<int, std::vector<int>> mivi;
+    std::vector<std::vector<std::string>> vvi;
+    std::deque<std::unordered_set<std::string>> duss;
+    std::vector<std::map<int, std::vector<std::string>>> vmii;
+
+    size_t SizeOf() const {
+        size_t s = 0;
+        s += ::SizeOf(vi);
+        s += ::SizeOf(mis);
+        s += ::SizeOf(umii);
+        s += ::SizeOf(mivi);
+        s += ::SizeOf(vvi);
+        s += ::SizeOf(duss);
+        s += ::SizeOf(vmii);
+        return s;
+    }
+};
+
+struct Map {
+    std::map<int, Lane> lanes;
+
+    size_t SizeOf() const {
+        size_t s = 0;
+        s += ::SizeOf(lanes);
+        return s;
+    }
 };
 
 int main()
@@ -20,9 +48,12 @@ int main()
     int* p = nullptr;
     std::cout << SizeOf(p) << std::endl;
 
-    Test t;
-    std::cout << SizeOf(t) << std::endl;
+    Lane t;
+    std::cout << "Lane: " << sizeof(t) << ", " << SizeOf(t) << std::endl;
     std::cout << SizeOf(&t) << std::endl;
+
+    Map sm;
+    std::cout << "Map: " << SizeOf(sm) << std::endl;
 
     std::unordered_map<int, int> umii{{0, 0}};
     std::cout << "umii: " << sizeof(umii) << ", " << SizeOf(umii) << std::endl;
